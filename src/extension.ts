@@ -1,21 +1,22 @@
 import * as vscode from 'vscode';
 import { parse } from './parser';
-import { getConfig } from './config';
-import { formatNode, FormatOptions } from './formatter';
+import { reload as reloadConfig, CONFIG  } from './config';
+import { formatNode } from './formatter';
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
 export function activate(context: vscode.ExtensionContext) {
+	reloadConfig();
 	diagnosticCollection = vscode.languages.createDiagnosticCollection('snbt');
 
 	// Toggle command
 	context.subscriptions.push(
 		vscode.commands.registerCommand('snbt.toggleLenientMode', () => {
-			const config = vscode.workspace.getConfiguration('snbt');
-			const current = config.get<boolean>('lenient', false);
-			config.update('lenient', !current, vscode.ConfigurationTarget.Global);
+			const next = !CONFIG.lenientMode;
+			vscode.workspace.getConfiguration('snbt').update('lenient', next);
+			CONFIG.lenientMode = next;
 			vscode.window.setStatusBarMessage(
-				`SNBT Lenient Mode: ${!current ? 'ON' : 'OFF'}`,
+				`SNBT Lenient Mode: ${next ? 'ON' : 'OFF'}`,
 				3000
 			);
 		})
@@ -26,19 +27,17 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.languages.registerDocumentFormattingEditProvider('snbt', {
 			provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
 				const text = document.getText();
-				const lenient = getConfig().lenientMode;
-				const result = parse(text, { lenient });
+				const result = parse(text, { lenient: CONFIG.lenientMode });
 
 				if (!result.ast || result.errors.length > 0) {
 					return [];
 				}
 
-				const fmt: FormatOptions = {
-					indentSize: vscode.workspace.getConfiguration('snbt').get<number>('format.indentSize', 4),
-					useTabs: vscode.workspace.getConfiguration('snbt').get<boolean>('format.useTabs', false),
-				};
+				const formatted = formatNode(result.ast, {
+					indentSize: CONFIG.indentSize,
+					useTabs: CONFIG.useTabs,
+				}) + '\n';
 
-				const formatted = formatNode(result.ast, fmt) + '\n';
 				const range = new vscode.Range(0, 0, document.lineCount, 0);
 				return [vscode.TextEdit.replace(range, formatted)];
 			}
@@ -66,16 +65,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// Configuration changed
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(event => {
-			if (event.affectsConfiguration('snbt.lenient')) {
-				vscode.window.setStatusBarMessage(
-					`SNBT Lenient Mode: ${getConfig().lenientMode ? 'ON' : 'OFF'}`,
-					3000
-				);
-				vscode.workspace.textDocuments.forEach(doc => {
-					if (doc.languageId === 'snbt') {
-						validateDocument(doc);
-					}
-				});
+			if (event.affectsConfiguration('snbt')) {
+				reloadConfig();
 			}
 		})
 	);
@@ -95,9 +86,8 @@ export function deactivate() {
 }
 
 function validateDocument(document: vscode.TextDocument): void {
-	const lenient = getConfig().lenientMode;
 	const text = document.getText();
-	const result = parse(text, { lenient });
+	const result = parse(text, { lenient: CONFIG.lenientMode });
 
 	const diagnostics: vscode.Diagnostic[] = result.errors.map(err => {
 		const range = new vscode.Range(
