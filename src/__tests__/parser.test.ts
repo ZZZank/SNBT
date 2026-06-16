@@ -230,6 +230,68 @@ function test_stray_comma() {
 }
 
 // ==============================
+// Formatter
+// ==============================
+import { formatNode, FormatOptions } from '../formatter';
+
+const fmtOpts: FormatOptions = { indentSize: 4, useTabs: false };
+
+function fmt(src: string, lenient = false): string {
+	const result = parse(src, { lenient });
+	if (!result.ast || result.errors.length > 0) {
+		throw new Error(`parse failed: ${result.errors.map(e => e.message).join(', ')}`);
+	}
+	return formatNode(result.ast, fmtOpts);
+}
+
+function test_format_basic() {
+	const out = fmt('{a:1,b:2}');
+	const expected = '{\n    a: 1,\n    b: 2\n}';
+	assert(out === expected, `format basic:\n${JSON.stringify(out)}\n!==\n${JSON.stringify(expected)}`);
+	// roundtrip
+	const r2 = parse(out, {});
+	assert(r2.errors.length === 0, `format basic roundtrip errors: ${r2.errors.map(e => e.message).join(', ')}`);
+}
+
+function test_format_nested() {
+	const out = fmt('{a:{b:{c:1}}}');
+	const expected = '{\n    a: {\n        b: {\n            c: 1\n        }\n    }\n}';
+	assert(out === expected, `format nested:\n${out}\n!==\n${expected}`);
+}
+
+function test_format_array() {
+	const out = fmt('[B;1b,2b,3b]');
+	assert(out === '[B; 1b, 2b, 3b]', `format array: ${out}`);
+}
+
+function test_format_roundtrip() {
+	const cases = [
+		'{a: 1b, b: 1s, c: 42, d: 1l, e: 3.14f, f: 3.14d, g: true, h: "hello"}',
+		'{flag: true, name: "test\\nvalue", nested: {x: 0xFF, y: [1, 2, 3]}}',
+		'{arr: [I; 1, 2, 3], empty: {}, items: ["a", "b", "c"]}',
+	];
+	for (const src of cases) {
+		const pass1 = fmt(src);
+		const pass2 = fmt(pass1);
+		assert(pass1 === pass2, `format roundtrip:\n${pass1}\n!==\n${pass2}`);
+	}
+}
+
+function test_format_tab_indent() {
+	const tabOpts: FormatOptions = { indentSize: 4, useTabs: true };
+	const out = formatNode(parse('{a: 1, b: 2}', {}).ast!, tabOpts);
+	const expected = '{\n\ta: 1,\n\tb: 2\n}';
+	assert(out === expected, `format tabs:\n${JSON.stringify(out)}\n!==\n${JSON.stringify(expected)}`);
+}
+
+function test_format_custom_indent_size() {
+	const twoOpts: FormatOptions = { indentSize: 2, useTabs: false };
+	const out = formatNode(parse('{a: {b: 1}}', {}).ast!, twoOpts);
+	const expected = '{\n  a: {\n    b: 1\n  }\n}';
+	assert(out === expected, `format 2-space:\n${JSON.stringify(out)}\n!==\n${JSON.stringify(expected)}`);
+}
+
+// ==============================
 // Run
 // ==============================
 const tests = [
@@ -265,6 +327,12 @@ const tests = [
 	test_line_comment_skip,
 	test_unclosed_string,
 	test_stray_comma,
+	test_format_basic,
+	test_format_nested,
+	test_format_array,
+	test_format_roundtrip,
+	test_format_tab_indent,
+	test_format_custom_indent_size,
 ];
 
 let passed = 0;

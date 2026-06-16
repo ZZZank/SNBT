@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { parse } from './parser';
 import { getConfig } from './config';
+import { formatNode, FormatOptions } from './formatter';
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
@@ -11,12 +12,36 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('snbt.toggleLenientMode', () => {
 			const config = vscode.workspace.getConfiguration('snbt');
-			const current = config.get<boolean>('lenientMode', false);
-			config.update('lenientMode', !current, vscode.ConfigurationTarget.Global);
+			const current = config.get<boolean>('lenient', false);
+			config.update('lenient', !current, vscode.ConfigurationTarget.Global);
 			vscode.window.setStatusBarMessage(
 				`SNBT Lenient Mode: ${!current ? 'ON' : 'OFF'}`,
 				3000
 			);
+		})
+	);
+
+	// Formatter
+	context.subscriptions.push(
+		vscode.languages.registerDocumentFormattingEditProvider('snbt', {
+			provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+				const text = document.getText();
+				const lenient = getConfig().lenientMode;
+				const result = parse(text, { lenient });
+
+				if (!result.ast || result.errors.length > 0) {
+					return [];
+				}
+
+				const fmt: FormatOptions = {
+					indentSize: vscode.workspace.getConfiguration('snbt').get<number>('format.indentSize', 4),
+					useTabs: vscode.workspace.getConfiguration('snbt').get<boolean>('format.useTabs', false),
+				};
+
+				const formatted = formatNode(result.ast, fmt) + '\n';
+				const range = new vscode.Range(0, 0, document.lineCount, 0);
+				return [vscode.TextEdit.replace(range, formatted)];
+			}
 		})
 	);
 
@@ -41,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Configuration changed
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(event => {
-			if (event.affectsConfiguration('snbt.lenientMode')) {
+			if (event.affectsConfiguration('snbt.lenient')) {
 				vscode.window.setStatusBarMessage(
 					`SNBT Lenient Mode: ${getConfig().lenientMode ? 'ON' : 'OFF'}`,
 					3000

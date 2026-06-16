@@ -1,0 +1,43 @@
+{
+    byteVal: 1b,
+    shortVal: 1s,
+    intVal: 42,
+    longVal: 1l,
+    floatVal: 3.14f,
+    doubleVal: 3.14d,
+    doubleVal2: 3.14,
+    str: "hello\nworld",
+    str2: "single quoted",
+    str3: "bare_string",
+    str4: "long\t",
+    flag: true,
+    flag2: false,
+    hexVal: 0xFF,
+    hexByte: 0x11ub,
+    binVal: 0b1010,
+    big: 1_000_000,
+    floatUnderscore: 1_2.3_4__5f,
+    sciNotation: 1.2e3,
+    signedByte: 123sb,
+    unsignedInt: 4294967295ui,
+    byteArray: [B; 1b, 2b, 3b],
+    intArray: [I; 1, 2, 3],
+    longArray: [L; 1l, 2l, 3l],
+    mixedList: [
+        "",
+        {
+            text: "hello"
+        },
+        123
+    ],
+    sub: {
+        key: "value",
+        num: 0x1C8
+    },
+    op: -{}-bool(5),
+    uuidOp: -{}-uuid("f81d4fae-7dec-11d0-a765-00a0c91e6bf6"),
+    sci1: 1e3,
+    sci2: 1.2E+3,
+    sci3: 12000e-1,
+    sci4: .1e3f
+}
