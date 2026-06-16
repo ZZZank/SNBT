@@ -57,7 +57,7 @@ class Parser {
 			case TokenType.BOOLEAN:
 				return this.parseBoolean();
 			default:
-				this.error(this.pos, `意外的词法单元: '${tok.lexeme}'`);
+				this.error(this.pos, `unexpected token: '${tok.lexeme}'`);
 				this.advance();
 				return null;
 		}
@@ -75,10 +75,10 @@ class Parser {
 			if (this.check(TokenType.COMMA)) {
 				this.advance();
 				if (this.check(TokenType.RBRACE)) {
-					if (first) this.error(this.pos - 1, '意外的逗号');
+					if (first) this.error(this.pos - 1, 'unexpected comma');
 					break;
 				}
-				if (first) this.error(this.pos - 1, '意外的逗号');
+				if (first) this.error(this.pos - 1, 'unexpected comma');
 				// comma serves as separator between pairs
 			} else if (!first) {
 				const sep = this.expectElementSeparator();
@@ -93,7 +93,7 @@ class Parser {
 			if (keyToken.type !== TokenType.STRING_DOUBLE &&
 				keyToken.type !== TokenType.STRING_SINGLE &&
 				keyToken.type !== TokenType.BARE_STRING) {
-				this.error(this.pos, `期望键名，得到 '${keyToken.lexeme}'`);
+				this.error(this.pos, `expected key, got '${keyToken.lexeme}'`);
 				this.advance();
 				continue;
 			}
@@ -103,7 +103,7 @@ class Parser {
 
 			// Colon
 			if (!this.check(TokenType.COLON)) {
-				this.error(this.pos, `期望 ':'，得到 '${this.peek().lexeme}'`);
+				this.error(this.pos, `expected ':', got '${this.peek().lexeme}'`);
 			} else {
 				this.advance();
 			}
@@ -146,10 +146,10 @@ class Parser {
 			if (this.check(TokenType.COMMA)) {
 				this.advance();
 				if (this.check(TokenType.RBRACKET)) {
-					if (first) this.error(this.pos - 1, '意外的逗号');
+					if (first) this.error(this.pos - 1, 'unexpected comma');
 					break;
 				}
-				if (first) this.error(this.pos - 1, '意外的逗号');
+				if (first) this.error(this.pos - 1, 'unexpected comma');
 			} else if (!first) {
 				const sep = this.expectElementSeparator();
 				if (sep === 'end') break;
@@ -183,10 +183,10 @@ class Parser {
 			if (this.check(TokenType.COMMA)) {
 				this.advance();
 				if (this.check(TokenType.RBRACKET)) {
-					if (first) this.error(this.pos - 1, '意外的逗号');
+					if (first) this.error(this.pos - 1, 'unexpected comma');
 					break;
 				}
-				if (first) this.error(this.pos - 1, '意外的逗号');
+				if (first) this.error(this.pos - 1, 'unexpected comma');
 			} else if (!first) {
 				const sep = this.expectElementSeparator();
 				if (sep === 'end') break;
@@ -215,7 +215,7 @@ class Parser {
 	private parseArrayElement(kind: ArrayKind): bigint | null {
 		const tok = this.peek();
 		if (tok.type !== TokenType.NUMBER) {
-			this.error(this.pos, `期望数值，得到 '${tok.lexeme}'`);
+			this.error(this.pos, `expected number, got '${tok.lexeme}'`);
 			this.advance();
 			return null;
 		}
@@ -238,7 +238,7 @@ class Parser {
 		this.expect(TokenType.OPERATION_PREFIX);
 		const nameTok = this.peek();
 		if (nameTok.type !== TokenType.BARE_STRING) {
-			this.error(this.pos, `期望操作名，得到 '${nameTok.lexeme}'`);
+			this.error(this.pos, `expected operation name, got '${nameTok.lexeme}'`);
 			this.advance();
 			return { kind: 'operation', name: '', args: [] };
 		}
@@ -302,7 +302,7 @@ class Parser {
 			}
 		}
 
-		this.error(this.pos, `期望 ',' 或 '}' 或 ']'，得到 '${next.lexeme}'`);
+		this.error(this.pos, `expected ',' or '}' or ']', got '${next.lexeme}'`);
 		return 'ok';
 	}
 
@@ -329,7 +329,7 @@ class Parser {
 			return this.advance();
 		}
 		const tok = this.peek();
-		this.error(this.pos, `期望 '${TokenType[type]}'，得到 '${tok.lexeme}'`);
+		this.error(this.pos, `expected '${TokenType[type]}', got '${tok.lexeme}'`);
 		return tok;
 	}
 

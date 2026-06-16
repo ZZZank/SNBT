@@ -24,19 +24,19 @@
         "snbt.lenient": {
           "type": "boolean",
           "default": false,
-          "description": "允许换行符代替逗号作为列表/复合标签/数组中的元素分隔符"
+          "description": "Allow newlines to replace commas as element separators in lists, compounds, and arrays"
         },
         "snbt.format.indentSize": {
           "type": "number",
           "default": 4,
           "minimum": 1,
           "maximum": 16,
-          "description": "格式化缩进大小"
+          "description": "Formatter indent size"
         },
         "snbt.format.useTabs": {
           "type": "boolean",
           "default": false,
-          "description": "使用制表符缩进，否则使用空格"
+          "description": "Use tabs for indentation, otherwise spaces"
         }
       }
     },
