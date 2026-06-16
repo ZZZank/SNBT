@@ -1,0 +1,11 @@
+{
+    missing_comma: [
+        "a"
+        "b"
+        "c"
+    ],
+    no_colon {bad},
+    "unclosed_string: "oops,
+    [B; 1,],
+    stray: [,comma],
+}

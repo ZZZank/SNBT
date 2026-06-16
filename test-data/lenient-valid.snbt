@@ -1,0 +1,32 @@
+{
+    # Only valid in lenient mode — newlines replace commas
+    this: [
+        "is"
+        "a"
+        "valid"
+        "SNBT"
+        "only in Lenient mode"
+    ]
+
+    nested: {
+        a: 1
+        b: 2
+        c: [
+            3
+            4
+            5
+        ]
+    }
+
+    mixed: [
+        1, 2,
+        3
+        4, 5
+    ]
+
+    byteArray: [B;
+        1b
+        2b
+        3b
+    ]
+}

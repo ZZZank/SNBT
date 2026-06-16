@@ -3,6 +3,8 @@
   "displayName": "SNBT",
   "description": "SNBT Language support",
   "version": "0.0.1",
+  "main": "./out/src/extension.js",
+  "activationEvents": [],
   "engines": {
     "vscode": "^1.120.0"
   },
@@ -10,16 +12,45 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "snbt",
-      "aliases": ["SNBT", "snbt"],
-      "extensions": [".snbt"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "snbt",
-      "scopeName": "source.snbt",
-      "path": "./syntaxes/snbt.tmLanguage.json"
-    }]
+    "configuration": {
+      "title": "SNBT",
+      "properties": {
+        "snbt.lenientMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "允许换行符代替逗号作为列表/复合标签/数组中的元素分隔符"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "snbt",
+        "aliases": [
+          "SNBT",
+          "snbt"
+        ],
+        "extensions": [
+          ".snbt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "snbt",
+        "scopeName": "source.snbt",
+        "path": "./syntaxes/snbt.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "@types/vscode": "^1.120.0",
+    "typescript": "^5.7.0"
   }
 }
