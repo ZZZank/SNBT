@@ -2,28 +2,97 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "SNBT",
 	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
+		{ "include": "#string_double" },
+		{ "include": "#string_single" },
+		{ "include": "#boolean" },
+		{ "include": "#number" },
+		{ "include": "#compound_key" },
+		{ "include": "#operation" },
+		{ "include": "#array_prefix" },
+		{ "include": "#punctuation" }
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.snbt",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
-		},
-		"strings": {
+		"string_double": {
 			"name": "string.quoted.double.snbt",
 			"begin": "\"",
 			"end": "\"",
+			"patterns": [{ "include": "#string_escape" }]
+		},
+		"string_single": {
+			"name": "string.quoted.single.snbt",
+			"begin": "'",
+			"end": "'",
+			"patterns": [{ "include": "#string_escape" }]
+		},
+		"string_escape": {
+			"name": "constant.character.escape.snbt",
+			"match": "\\\\."
+		},
+		"boolean": {
+			"name": "constant.language.boolean.snbt",
+			"match": "\\b(?:true|false)\\b"
+		},
+		"number": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.snbt",
-					"match": "\\\\."
+					"name": "constant.numeric.float.snbt",
+					"match": "(?:\\.[\\d_]+(?:[eE][+-]?[\\d_]+)?|[\\d_]+\\.(?:[\\d_]*)(?:[eE][+-]?[\\d_]+)?|[\\d_]+[eE][+-]?[\\d_]+)[fFdD]"
+				},
+				{
+					"name": "constant.numeric.float.snbt",
+					"match": "\\.[\\d_]+(?:[eE][+-]?[\\d_]+)?|[\\d_]+\\.(?:[\\d_]*)(?:[eE][+-]?[\\d_]+)?|[\\d_]+[eE][+-]?[\\d_]+"
+				},
+				{
+					"name": "constant.numeric.integer.snbt",
+					"match": "0x[0-9a-fA-F][0-9a-fA-F_]*(?:[us])?[bBsSiIlL]?"
+				},
+				{
+					"name": "constant.numeric.integer.snbt",
+					"match": "0b[01][01_]*(?:[us])?[bBsSiIlL]?"
+				},
+				{
+					"name": "constant.numeric.integer.snbt",
+					"match": "\\d[\\d_]*(?:[us])?[bBsSiIlL]?"
+				},
+				{
+					"name": "constant.numeric.integer.snbt",
+					"match": "\\d[\\d_]*"
+				}
+			]
+		},
+		"compound_key": {
+			"name": "entity.other.attribute-name.snbt",
+			"match": "\\b[a-zA-Z_][a-zA-Z0-9_+\\-.]*\\s*(?=:)"
+		},
+		"operation": {
+			"patterns": [
+				{
+					"name": "keyword.operator.snbt",
+					"match": "-\\{\\}-"
+				},
+				{
+					"name": "support.function.snbt",
+					"match": "\\b(bool|uuid)\\s*(?=\\()"
+				}
+			]
+		},
+		"array_prefix": {
+			"match": "(\\[)([BIL])(;)",
+			"captures": {
+				"1": { "name": "punctuation.section.bracket.snbt" },
+				"2": { "name": "storage.type.snbt" },
+				"3": { "name": "punctuation.separator.snbt" }
+			}
+		},
+		"punctuation": {
+			"patterns": [
+				{
+					"name": "punctuation.section.bracket.snbt",
+					"match": "[\\[\\]{}()]"
+				},
+				{
+					"name": "punctuation.separator.snbt",
+					"match": "[,:;]"
 				}
 			]
 		}
