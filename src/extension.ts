@@ -1,11 +1,24 @@
 import * as vscode from 'vscode';
-import { parse, ParseError as SnbtParseError } from './parser';
+import { parse } from './parser';
 import { getConfig } from './config';
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 
 export function activate(context: vscode.ExtensionContext) {
 	diagnosticCollection = vscode.languages.createDiagnosticCollection('snbt');
+
+	// Toggle command
+	context.subscriptions.push(
+		vscode.commands.registerCommand('snbt.toggleLenientMode', () => {
+			const config = vscode.workspace.getConfiguration('snbt');
+			const current = config.get<boolean>('lenientMode', false);
+			config.update('lenientMode', !current, vscode.ConfigurationTarget.Global);
+			vscode.window.setStatusBarMessage(
+				`SNBT Lenient Mode: ${!current ? 'ON' : 'OFF'}`,
+				3000
+			);
+		})
+	);
 
 	// Active editor changed
 	context.subscriptions.push(
@@ -29,6 +42,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.onDidChangeConfiguration(event => {
 			if (event.affectsConfiguration('snbt.lenientMode')) {
+				vscode.window.setStatusBarMessage(
+					`SNBT Lenient Mode: ${getConfig().lenientMode ? 'ON' : 'OFF'}`,
+					3000
+				);
 				vscode.workspace.textDocuments.forEach(doc => {
 					if (doc.languageId === 'snbt') {
 						validateDocument(doc);

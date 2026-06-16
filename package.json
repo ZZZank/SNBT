@@ -12,6 +12,12 @@
     "Programming Languages"
   ],
   "contributes": {
+    "commands": [
+      {
+        "command": "snbt.toggleLenientMode",
+        "title": "SNBT: Toggle Lenient Mode"
+      }
+    ],
     "configuration": {
       "title": "SNBT",
       "properties": {
