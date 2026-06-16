@@ -1,65 +1,67 @@
-# snbt README
+# SNBT
 
-This is the README for your extension "snbt". After writing up a brief description, we recommend including the following sections.
+VS Code extension for [SNBT](https://minecraft.fandom.com/wiki/NBT_format#SNBT_format) (Stringified NBT).
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Syntax Highlighting
 
-For example if there is an image subfolder under your extension project workspace:
+Full TextMate grammar covering all SNBT syntax:
 
-\!\[feature X\]\(images/feature-x.png\)
+- All numeric types with suffixes: `1b`, `1s`, `42`, `1l`, `3.14f`, `3.14d`
+- Hex (`0xFF`) and binary (`0b1010`) literals
+- Signed/unsigned integer suffixes: `sb`, `ub`, `ss`, `us`, `si`, `ui`, `sl`, `ul`
+- Underscore digit separators: `1_000`, `1_2.3_4__5f`
+- Scientific notation: `1.2e3`, `1.2E+3`, `.1e3f`
+- Strings: double-quoted, single-quoted, bare strings, all escape sequences
+- Booleans: `true` / `false`
+- Compounds `{}`, Lists `[]`, typed arrays `[B;]` `[I;]` `[L;]`
+- SNBT operations like `-{}-bool()` and `-{}-uuid()`
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Diagnostics
 
-## Requirements
+Error reporting as you type:
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Missing commas between elements
+- Missing colons in key-value pairs
+- Unexpected tokens
+- Stray commas
+
+### Lenient Mode
+
+Toggle lenient mode (`SNBT: Toggle Lenient Mode`) to allow newlines as element separators. Useful when viewing `.snbt` from **certain** mods:
+
+Strict (default):
+```snbt
+{this: ["is", "a", "valid", "SNBT"]}
+```
+
+Lenient:
+```snbt
+{
+    this: [
+        "is"
+        "a"
+        "valid"
+        "SNBT"
+    ]
+}
+```
+
+### Formatting
+
+Format `.snbt` files with configurable indentation (spaces or tabs, custom indent size).
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `snbt.lenient` | `false` | Allow newlines to replace commas as element separators |
+| `snbt.format.indentSize` | `4` | Formatter indent size |
+| `snbt.format.useTabs` | `false` | Use tabs for indentation, otherwise spaces |
 
-For example:
+## Commands
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+| Command | Description |
+|---------|-------------|
+| `SNBT: Toggle Lenient Mode` | Toggle lenient mode on/off |

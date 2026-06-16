@@ -2,7 +2,17 @@
   "name": "snbt",
   "displayName": "SNBT",
   "description": "SNBT Language support",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "author": {
+    "name": "Zank",
+    "url": "https://github.com/ZZZank"
+  },
+  "license": "LGPL-2.1-or-later",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/ZZZank/SNBT"
+  },
+  "publisher": "zzzank",
   "main": "./out/src/extension.js",
   "activationEvents": [],
   "engines": {

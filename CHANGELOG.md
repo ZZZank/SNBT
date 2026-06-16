@@ -1,9 +1,8 @@
-# Change Log
+## Release Notes
 
-All notable changes to the "snbt" extension will be documented in this file.
+### 0.1.0
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+- Full SNBT parser with strict and lenient modes
+- Real-time diagnostic reporting
+- Document formatter with configurable indentation
+- Syntax highlighting via TextMate grammar
