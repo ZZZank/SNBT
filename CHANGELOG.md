@@ -1,5 +1,9 @@
 ## Release Notes
 
+### 0.1.1
+
+Fix config reading
+
 ### 0.1.0
 
 - Full SNBT parser with strict and lenient modes
