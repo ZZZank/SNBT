@@ -1,0 +1,25 @@
+{
+  "name": "snbt",
+  "displayName": "SNBT",
+  "description": "SNBT Language support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.120.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "snbt",
+      "aliases": ["SNBT", "snbt"],
+      "extensions": [".snbt"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "snbt",
+      "scopeName": "source.snbt",
+      "path": "./syntaxes/snbt.tmLanguage.json"
+    }]
+  }
+}
